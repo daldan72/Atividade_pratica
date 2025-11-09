@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introdução: Git e GitHub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        header p {
+            font-size: 1.2em;
+            opacity: 0.95;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            padding: 20px;
+            background: #f8f9fa;
+            flex-wrap: wrap;
+        }
+        
+        .nav-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            background: #667eea;
+            color: white;
+            cursor: pointer;
+            font-size: 0.95em;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+        
+        .nav-btn:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .nav-btn.active {
+            background: #f5576c;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .section {
+            display: none;
+        }
+        
+        .section.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        h2 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 20px;
+            border-left: 5px solid #f5576c;
+            padding-left: 15px;
+        }
+        
+        h3 {
+            color: #764ba2;
+            font-size: 1.4em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        
+        .command-box {
+            background: #2d3748;
+            color: #48bb78;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            margin: 20px 0;
+            position: relative;
+            overflow-x: auto;
+        }
+        
+        .command-box::before {
+            content: '$ ';
+            color: #f5576c;
+            font-weight: bold;
+        }
+        
+        .info-box {
+            background: #e6fffa;
+            border-left: 4px solid #38b2ac;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        
+        .info-box strong {
+            color: #234e52;
+        }
+        
+        .warning-box {
+            background: #fffaf0;
+            border-left: 4px solid #ed8936;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        
+        .step {
+            background: #f7fafc;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            border: 2px solid #e2e8f0;
+        }
+        
+        .step-number {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 35px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .visual-diagram {
+            background: white;
+            border: 3px solid #667eea;
+            border-radius: 10px;
+            padding: 30px;
+            margin: 30px 0;
+            text-align: center;
+        }
+        
+        .git-flow {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .flow-item {
+            flex: 1;
+            min-width: 150px;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        .arrow {
+            font-size: 2em;
+            color: #667eea;
+        }
+        
+        ul {
+            margin: 15px 0 15px 30px;
+        }
+        
+        li {
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+        
+        .quiz-section {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .quiz-btn {
+            background: #48bb78;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-top: 10px;
+            transition: all 0.3s;
+        }
+        
+        .quiz-btn:hover {
+            background: #38a169;
+            transform: scale(1.05);
+        }
+        
+        .footer {
+            background: #2d3748;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><img src="imagens/git_logotipo.png" alt="Logo GitHub" width="40" height="40"> Git e GitHub <img src="imagens/github_logotipo.png" alt="Logo GitHub" width="40" height="40"></h1>
+        </header>
+        
+        <div class="nav-buttons">
+            <button class="nav-btn active" onclick="showSection('intro')">Introdução</button>
+            <button class="nav-btn" onclick="showSection('concepts')">Conceitos Básicos</button>
+            <button class="nav-btn" onclick="showSection('commands')">Comandos Git</button>
+            <button class="nav-btn" onclick="showSection('github')">GitHub</button>
+            <button class="nav-btn" onclick="showSection('practice')">Prática Guiada</button>
+        </div>
+        
+        <div class="content">
+            <!-- INTRODUÇÃO -->
+            <div id="intro" class="section active">
+                <h2>O que é o Git e o GitHub?</h2>
+                <p>O <strong>Git</strong> é um sistema de controlo de versões que permite acompanhar as alterações nos ficheiros ao longo do tempo. Imagina que é como ter uma máquina do tempo para o teu código!</p>
+                
+                <div class="info-box">
+                    <strong>Porquê usar Git?</strong><br>
+                    • Guardar diferentes versões do teu projeto<br>
+                    • Colaborar com outras pessoas sem conflitos<br>
+                    • Recuperar versões anteriores se algo correr mal<br>
+                    • Trabalhar em diferentes funcionalidades ao mesmo tempo
+                </div>
+                
+                <p>O <strong>GitHub</strong> é uma plataforma online que aloja repositórios Git. É como uma rede social para programadores, onde podes partilhar os teus projetos e colaborar com outros.</p>
+                
+                <div class="visual-diagram">
+                    <h3 style="color: #667eea; margin-bottom: 20px;">Relação Git ↔ GitHub</h3>
+                    <div class="git-flow">
+                        <div class="flow-item">Computador Local<br>(Git)</div>
+                        <div class="arrow">→</div>
+                        <div class="flow-item">Servidor Remoto<br>(GitHub)</div>
+                    </div>
+                    <p style="margin-top: 20px; color: #4a5568;">O Git trabalha localmente. O GitHub guarda tudo online!</p>
+                </div>
+            </div>
+            
+            <!-- CONCEITOS BÁSICOS -->
+            <div id="concepts" class="section">
+                <h2>Conceitos Fundamentais</h2>
+                
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <strong>Repositório (Repository)</strong>
+                    <p>É a pasta do teu projeto que está a ser monitorizada pelo Git. Contém todos os ficheiros e o histórico de alterações.</p>
+                </div>
+                
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <strong>Commit</strong>
+                    <p>É como tirar uma fotografia do teu projeto num determinado momento. Cada commit guarda as alterações que fizeste.</p>
+                </div>
+                
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <strong>Branch (Ramificação)</strong>
+                    <p>É uma linha independente de desenvolvimento. Podes trabalhar em funcionalidades novas sem afetar o código principal.</p>
+                </div>
+                
+                <div class="step">
+                    <span class="step-number">4</span>
+                    <strong>Clone</strong>
+                    <p>Fazer uma cópia de um repositório do GitHub para o teu computador.</p>
+                </div>
+                
+                <div class="step">
+                    <span class="step-number">5</span>
+                    <strong>Push</strong>
+                    <p>Enviar as tuas alterações locais para o GitHub.</p>
+                </div>
+                
+                <div class="step">
+                    <span class="step-number">6</span>
+                    <strong>Pull</strong>
+                    <p>Trazer alterações do GitHub para o teu computador.</p>
+                </div>
+                
+                <div class="visual-diagram">
+                    <h3 style="color: #667eea; margin-bottom: 20px;">Fluxo de Trabalho Git</h3>
+                    <div class="git-flow">
+                        <div class="flow-item">Editar Ficheiros</div>
+                        <div class="arrow">→</div>
+                        <div class="flow-item">Adicionar (add)</div>
+                        <div class="arrow">→</div>
+                        <div class="flow-item">Commit</div>
+                        <div class="arrow">→</div>
+                        <div class="flow-item">Push</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- COMANDOS GIT -->
+            <div id="commands" class="section">
+                <h2>Comandos Essenciais do Git</h2>
+                
+                <h3>Iniciar um Repositório</h3>
+                <div class="command-box">git init</div>
+                <p>Transforma uma pasta normal num repositório Git.</p>
+                
+                <h3>Verificar o Estado</h3>
+                <div class="command-box">git status</div>
+                <p>Mostra quais ficheiros foram modificados, adicionados ou eliminados.</p>
+                
+                <h3>Adicionar Ficheiros</h3>
+                <div class="command-box">git add nome_do_ficheiro</div>
+                <p>Prepara um ficheiro específico para o próximo commit.</p>
+                
+                <div class="command-box">git add .</div>
+                <p>Adiciona TODOS os ficheiros modificados de uma vez.</p>
+                
+                <h3>Fazer um Commit</h3>
+                <div class="command-box">git commit -m "Mensagem descritiva do que foi alterado"</div>
+                <p>Guarda as alterações com uma mensagem explicativa.</p>
+                
+                <div class="info-box">
+                    <strong>Boas Práticas para Mensagens de Commit:</strong><br>
+                    • Usa frases curtas e descritivas<br>
+                    • Começa com um verbo no imperativo (ex: "Adiciona", "Corrige", "Atualiza")<br>
+                    • Exemplo: "Adiciona função de login" em vez de "fiz coisas"
+                </div>
+                
+                <h3>Ver Histórico</h3>
+                <div class="command-box">git log</div>
+                <p>Mostra o histórico de todos os commits realizados.</p>
+                
+                <h3>Criar uma Ramificação</h3>
+                <div class="command-box">git branch nome_do_branch</div>
+                <p>Cria uma nova ramificação de desenvolvimento.</p>
+                
+                <h3>Mudar de Ramificação</h3>
+                <div class="command-box">git checkout nome_do_branch</div>
+                <p>Muda para outra ramificação de trabalho.</p>
+                
+                <div class="command-box">git checkout -b nome_do_branch</div>
+                <p>Cria uma nova ramificação e muda para ela ao mesmo tempo.</p>
+                
+                <h3>Enviar para o GitHub</h3>
+                <div class="command-box">git push origin main</div>
+                <p>Envia os commits da ramificação "main" para o GitHub.</p>
+                
+                <h3>Trazer do GitHub</h3>
+                <div class="command-box">git pull</div>
+                <p>Atualiza o repositório local com as alterações do GitHub.</p>
+            </div>
+            
+            <!-- GITHUB -->
+            <div id="github" class="section">
+                <h2>Trabalhar com o GitHub</h2>
+                
+                <h3>Criar um repositório no GitHub</h3>
+                <div class="step">
+                    <span class="step-number">1</span>
+                    Acede a <strong>github.com</strong> e faz login
+                </div>
+                
+                <div class="step">
+                    <span class="step-number">2</span>
+                    Clica no botão <strong>"+"</strong>, opção <strong>New repository</strong> no canto superior direito
+                </div>
+                
+                <div class="step">
+                    <span class="step-number">3</span>
+                    Dá um nome ao repositório e escolhe se é público ou privado
+                </div>
+                
+                <div class="step">
+                    <span class="step-number">4</span>
+                    Podes adicionar um README (ficheiro de apresentação do projeto)
+                </div>
+                
+                <div class="step">
+                    <span class="step-number">5</span>
+                    Clica em <strong>"Create repository"</strong>
+                </div>
+                
+                <h3>Ligar um repositório local ao GitHub</h3>
+                <p>Depois de criar um repositório no GitHub, podes conectá-lo ao teu projeto local:</p>
+                
+                <div class="command-box">git remote add origin https://github.com/teu_username/nome_repositorio.git</div>
+                <div class="command-box">git push -u origin main</div>
+                
+                <h3>Clonar um repositório</h3>
+                <p>Para importar um projeto do GitHub para o teu computador:</p>
+                <div class="command-box">git clone https://github.com/username/nome_repositorio.git</div>
+                
+                <div class="warning-box">
+                    <strong>Atenção:</strong> Certifica-te de que estás na pasta correta quando executas comandos Git. Usa <code>cd "nome_da_pasta"</code> para navegar entre pastas.
+                </div>
+            </div>
+            
+            <!-- PRÁTICA GUIADA -->
+            <div id="practice" class="section">
+                <h2>Atividade prática guiada</h2>
+                <p><strong>Objetivo:</strong> Criar o teu primeiro repositório Git e enviá-lo para o GitHub.</p>
+                
+                <h3>Passo 1: Preparar o Ambiente</h3>
+                <div class="step">
+                    <span class="step-number">1</span>
+                    Cria uma nova pasta para o projeto<br>
+                </div>
+                
+                <div class="step">
+                    
+                    <span class="step-number">2</span>
+                    Abre o terminal (Windows) e acede ao Git Bash
+                </div>
+                
+                <div class="step">
+                    <span class="step-number">3</span>
+                    Entra na pasta criada anteriormente, copiando o caminho da respetiva pasta:<br>
+                    <div class="command-box">cd "caminho da pasta"</div>
+                </div>
+                
+                <h3>Passo 2: Inicializar Git</h3>
+                <div class="step">
+                    <span class="step-number">4</span>
+                    Inicializa o repositório Git:<br>
+                    <div class="command-box">git init</div>
+                </div>
+                
+                <h3>Passo 3: Criar Ficheiro</h3>
+                <div class="step">
+                    <span class="step-number">5</span>
+                    Cria um ficheiro README.md (podes usar um editor de texto)<br>
+                    <br>
+                    Conteúdo sugerido: "# O Meu Primeiro Projeto Git"
+                </div>
+                
+                <h3>Passo 4: Primeiro Commit</h3>
+                <div class="step">
+                    <span class="step-number">6</span>
+                    Adiciona o ficheiro:<br>
+                    <div class="command-box">git add README.md</div>
+                </div>
+                
+                <div class="step">
+                    <span class="step-number">7</span>
+                    Faz o commit:<br>
+                    <div class="command-box">git commit -m "Adiciona README inicial"</div>
+                </div>
+                
+                <h3>Passo 5: Enviar para GitHub</h3>
+                <div class="step">
+                    <span class="step-number">8</span>
+                    Cria um repositório no GitHub (como visto na secção anterior)
+                </div>
+                
+                <div class="step">
+                    <span class="step-number">9</span>
+                    Conecta o repositório local ao GitHub:<br>
+                    <div class="command-box">git remote add origin URL_DO_TEU_REPOSITORIO</div>
+                </div>
+                
+                <div class="step">
+                    <span class="step-number">10</span>
+                    Envia para o GitHub:<br>
+                    <div class="command-box">git branch -M main</div>
+                    <div class="command-box">git push -u origin main</div>
+                </div>
+                
+                <div class="info-box">
+                    <strong>Parabéns!</strong> Criaste o teu primeiro repositório Git e enviaste-o para o GitHub. Agora podes continuar a adicionar ficheiros, fazer commits e enviar alterações.
+                </div>
+                
+                <div class="quiz-section">
+                    <h3>Desafio Extra</h3>
+                    <p><strong>Tenta fazer o seguinte:</strong></p>
+                    <ul>
+                        <li>Cria um novo ficheiro chamado "index.html"</li>
+                        <li>Adiciona-o ao Git</li>
+                        <li>Faz um commit com uma mensagem apropriada</li>
+                        <li>Envia as alterações para o GitHub</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Introdução ao Git e GitHub</p>
+        </div>
+    </div>
+    
+    <script>
+        function showSection(sectionId) {
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            const buttons = document.querySelectorAll('.nav-btn');
+            buttons.forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            document.getElementById(sectionId).classList.add('active');
+            event.target.classList.add('active');
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
